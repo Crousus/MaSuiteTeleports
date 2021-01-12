@@ -35,3 +35,7 @@ tptoggle:
   on: "&cYou are now denying force teleportations!"
   off: "&aYou are now allowing force teleportations!"
   disabled: "&c%player has disabled force teleportations!"
+helpop:
+  received: '&aHelpop: %player% : %message%'
+  standard: '&aHelpop: %player% is requesting help'
+  confirmation: '&aHelpop: Help has been successfully requested'

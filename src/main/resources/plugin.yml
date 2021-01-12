@@ -6,3 +6,18 @@ depends: [MaSuiteCore]
 softdepend: [Multiverse, MultiWorld]
 loadbefore: [Essentials]
 api-version: 1.13
+
+commands:
+  gamemode:
+    description: Sets the gamemode
+    aliases: [ gm, gmode ]
+    permission: masuite.gamemode
+  repair:
+    description: Sets the gamemode
+    permission: masuite.repair
+  god:
+    description: Switches god mode
+    permission: masuite.god
+  fly:
+    description: Switches fly mode
+    permission: masuite.fly

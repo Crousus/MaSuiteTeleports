@@ -7,13 +7,13 @@ import dev.masa.masuitecore.core.api.MaSuiteCoreBukkitAPI;
 import dev.masa.masuitecore.core.channels.BukkitPluginChannel;
 import dev.masa.masuitecore.core.configuration.BukkitConfiguration;
 import dev.masa.masuitecore.core.utils.CommandManagerUtil;
-import dev.masa.masuiteteleports.bukkit.commands.BackCommand;
-import dev.masa.masuiteteleports.bukkit.commands.SpawnCommands;
-import dev.masa.masuiteteleports.bukkit.commands.TeleportForceCommands;
-import dev.masa.masuiteteleports.bukkit.commands.TeleportRequestCommands;
+import dev.masa.masuiteteleports.bukkit.commands.*;
 import dev.masa.masuiteteleports.bukkit.commands.force.TpCommand;
+import dev.masa.masuiteteleports.bukkit.listeners.PlayerJoinListener;
 import dev.masa.masuiteteleports.bukkit.listeners.TeleportListener;
+import dev.masa.masuiteteleports.core.objects.PlayerSavedStates;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,21 +27,25 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
 public class MaSuiteTeleports extends JavaPlugin implements Listener {
 
-    public BukkitConfiguration config = new BukkitConfiguration();
+    public static BukkitConfiguration config = new BukkitConfiguration();
     @Getter
-    private MaSuiteCoreBukkitAPI api = new MaSuiteCoreBukkitAPI();
+    private final MaSuiteCoreBukkitAPI api = new MaSuiteCoreBukkitAPI();
 
     public List<UUID> tpQue = new ArrayList<>();
     public static List<Player> ignoreTeleport = new ArrayList<>();
     PaperCommandManager manager;
 
+    private static MaSuiteTeleports plugin;
+
     @Override
     public void onEnable() {
+        plugin = this;
         // Create configs
         config.create(this, "teleports", "config.yml");
 
@@ -66,6 +70,7 @@ public class MaSuiteTeleports extends JavaPlugin implements Listener {
         api.getCooldownService().addCooldownLength("back", config.load("teleports", "config.yml").getInt("cooldown"));
 
         api.getWarmupService().addWarmupTime("teleports", config.load("teleports", "config.yml").getInt("warmup"));
+
     }
 
     private void loadCommands() {
@@ -74,6 +79,14 @@ public class MaSuiteTeleports extends JavaPlugin implements Listener {
         manager.registerCommand(new TeleportRequestCommands(this));
         manager.registerCommand(new SpawnCommands(this));
         manager.registerCommand(new BackCommand(this));
+
+        HashMap<String, PlayerSavedStates> players = new HashMap<>();
+
+        getCommand("gamemode").setExecutor(new GamemodeCommand(players));
+        getCommand("repair").setExecutor(new RepairCommand());
+        getCommand("god").setExecutor(new GodCommand(players));
+        getCommand("fly").setExecutor(new FlyCommand(players));
+        Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(players), this);
     }
 
     @EventHandler
@@ -147,5 +160,9 @@ public class MaSuiteTeleports extends JavaPlugin implements Listener {
                 getServer().getScheduler().runTaskLaterAsynchronously(this, () -> new BukkitPluginChannel(this, e.getPlayer(), "MaSuiteTeleports", "FirstSpawnPlayer", e.getPlayer().getName()).send(), 10);
             }
         }
+    }
+
+    public static MaSuiteTeleports getPl() {
+        return plugin;
     }
 }

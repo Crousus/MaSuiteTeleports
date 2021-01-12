@@ -5,6 +5,7 @@ import dev.masa.masuitecore.bungee.chat.Formator;
 import dev.masa.masuitecore.core.Updator;
 import dev.masa.masuitecore.core.api.MaSuiteCoreAPI;
 import dev.masa.masuitecore.core.configuration.BungeeConfiguration;
+import dev.masa.masuiteteleports.bungee.commands.HelpOpCommand;
 import dev.masa.masuiteteleports.bungee.listeners.PlayerJoinEvent;
 import dev.masa.masuiteteleports.bungee.listeners.PlayerQuitEvent;
 import dev.masa.masuiteteleports.bungee.listeners.TeleportMessageListener;
@@ -13,6 +14,7 @@ import dev.masa.masuiteteleports.core.services.PlayerTeleportService;
 import dev.masa.masuiteteleports.core.services.SpawnService;
 import dev.masa.masuiteteleports.core.services.TeleportRequestService;
 import lombok.Getter;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -32,7 +34,7 @@ public class MaSuiteTeleports extends Plugin implements Listener {
     private SpawnService spawnService;
 
     @Getter
-    private MaSuiteCoreAPI api = new MaSuiteCoreAPI();
+    private final MaSuiteCoreAPI api = new MaSuiteCoreAPI();
 
     @Override
     public void onEnable() {
@@ -55,6 +57,8 @@ public class MaSuiteTeleports extends Plugin implements Listener {
         getProxy().getPluginManager().registerListener(this, new PlayerJoinEvent(this));
         //getProxy().getPluginManager().registerListener(this, new PlayerServerConnectEvent(this));
         getProxy().getPluginManager().registerListener(this, new PlayerQuitEvent(this));
+
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new HelpOpCommand(this));
 
         // Check updates
         new Updator(getDescription().getVersion(), getDescription().getName(), "60125").checkUpdates();

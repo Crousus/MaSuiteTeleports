@@ -3,3 +3,21 @@ cooldown: 3
 warmup: 3
 spawn:
   first: true
+gamemode:
+  self: '&aYour gamemode has been updated!'
+  other: '&aGamemode of %player% has been updated!'
+fly:
+  self:
+    enabled: '&aYour fly has been enabled'
+    disabled: '&aYou fly has been disabled'
+  other:
+    enabled: '&aYou enabled fly for %player%'
+    disabled: '&aYou disabled fly for %player%'
+god:
+  self:
+    enabled: '&aYour god has been enabled'
+    disabled: '&aYou god has been disabled'
+  other:
+    enabled: '&aYou enabled god for %player%'
+    disabled: '&aYou disabled god for %player%'
+repair: '&aAll your items have been repaired!'
