@@ -42,6 +42,21 @@ public class PlayerTeleportService {
         }
     }
 
+    public void teleportPlayerToRandom(ProxiedPlayer player, String server) {
+        BungeePluginChannel bpc = new BungeePluginChannel(plugin, plugin.getProxy().getServerInfo(server),
+                "MaSuiteTeleports", "PlayerToRandom", player.getName());
+
+        if (!player.getServer().getInfo().getName().equals(player.getServer().getInfo().getName())) {
+            plugin.getProxy().getScheduler().runAsync(plugin, () -> player.connect(plugin.getProxy().getServerInfo(player.getServer().getInfo().getName()), (connected, throwable) -> {
+                if (connected) {
+                    plugin.getProxy().getScheduler().schedule(plugin, bpc::send, plugin.config.load(null, "config.yml").getInt("teleportation-delay"), TimeUnit.MILLISECONDS);
+                }
+            }));
+        } else {
+            bpc.send();
+        }
+    }
+
     /**
      * Add toggle mode to the player
      *
