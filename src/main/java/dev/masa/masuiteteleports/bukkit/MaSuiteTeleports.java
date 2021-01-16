@@ -38,6 +38,7 @@ public class MaSuiteTeleports extends JavaPlugin implements Listener {
     private final MaSuiteCoreBukkitAPI api = new MaSuiteCoreBukkitAPI();
 
     public List<UUID> tpQue = new ArrayList<>();
+    public List<UUID> rtpQue = new ArrayList<>();
     public static List<Player> ignoreTeleport = new ArrayList<>();
     PaperCommandManager manager;
 
@@ -51,6 +52,7 @@ public class MaSuiteTeleports extends JavaPlugin implements Listener {
 
         config.addDefault("teleports/config.yml", "cooldown", 3);
         config.addDefault("teleports/config.yml", "warmup", 3);
+        config.addDefault("teleports/config.yml", "randomtp.radius", 100000);
 
         getServer().getPluginManager().registerEvents(this, this);
         getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");

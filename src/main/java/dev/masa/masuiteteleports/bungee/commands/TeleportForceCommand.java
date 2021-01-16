@@ -71,6 +71,7 @@ public class TeleportForceCommand {
 
     }
 
+
     // TpCommand player to specific location in the same server
     public void tp(ProxiedPlayer sender, String t, Location loc) {
         ProxiedPlayer target = new PlayerFinder().get(t);

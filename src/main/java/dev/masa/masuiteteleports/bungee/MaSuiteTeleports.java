@@ -6,6 +6,7 @@ import dev.masa.masuitecore.core.Updator;
 import dev.masa.masuitecore.core.api.MaSuiteCoreAPI;
 import dev.masa.masuitecore.core.configuration.BungeeConfiguration;
 import dev.masa.masuiteteleports.bungee.commands.HelpOpCommand;
+import dev.masa.masuiteteleports.bungee.commands.RandomTeleportCommand;
 import dev.masa.masuiteteleports.bungee.listeners.PlayerJoinEvent;
 import dev.masa.masuiteteleports.bungee.listeners.PlayerQuitEvent;
 import dev.masa.masuiteteleports.bungee.listeners.TeleportMessageListener;
@@ -17,6 +18,8 @@ import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
+
+import java.util.Random;
 
 public class MaSuiteTeleports extends Plugin implements Listener {
 
@@ -59,12 +62,16 @@ public class MaSuiteTeleports extends Plugin implements Listener {
         getProxy().getPluginManager().registerListener(this, new PlayerQuitEvent(this));
 
         ProxyServer.getInstance().getPluginManager().registerCommand(this, new HelpOpCommand(this));
+        ProxyServer.getInstance().getPluginManager().registerCommand(this, new RandomTeleportCommand(this));
 
         // Check updates
         new Updator(getDescription().getVersion(), getDescription().getName(), "60125").checkUpdates();
 
         // Add default values to configs
+        config.addDefault("teleports/messages.yml", "randomtp.server-not-exists", "&7This server does not exist!");
+        config.addDefault("teleports/messages.yml", "randomtp.player-not-online", "&7This player is not online!");
         config.addDefault("teleports/messages.yml", "receiver.teleported", "&7You have been teleported to &b%player%&7!");
+        config.addDefault("teleports/messages.yml", "randomtp.syntax-error", "&7Syntax error / Wrong args");
         config.addDefault("teleports/messages.yml", "sender.teleported", "&9%player%&7 has been teleported to you!");
         config.addDefault("teleports/messages.yml", "tptoggle.on", "&cYou are now denying force teleportations!");
         config.addDefault("teleports/messages.yml", "tptoggle.off", "&aYou are now allowing force teleportations!");

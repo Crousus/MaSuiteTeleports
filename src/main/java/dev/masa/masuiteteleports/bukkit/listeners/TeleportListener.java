@@ -11,10 +11,12 @@ import org.bukkit.plugin.messaging.PluginMessageListener;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Random;
 import java.util.UUID;
 
 public class TeleportListener implements PluginMessageListener {
     private MaSuiteTeleports plugin;
+    private Random random = new Random();
 
     public TeleportListener(MaSuiteTeleports p) {
         plugin = p;
@@ -36,6 +38,9 @@ public class TeleportListener implements PluginMessageListener {
             method = in.readUTF();
             if (method.equals("PlayerToPlayer")) {
                 teleportPlayer(in.readUTF(), in.readUTF());
+            }
+            if (method.equals("PlayerToRandom")) {
+                teleportPlayerToRandom(in.readUTF());
             }
             if (method.equals("PlayerToXYZ")) {
                 Player p = Bukkit.getPlayer(in.readUTF());
@@ -115,6 +120,31 @@ public class TeleportListener implements PluginMessageListener {
             e.printStackTrace();
         }
 
+    }
+
+    private void teleportPlayerToRandom(final String s) {
+        Player player = Bukkit.getPlayer(s);
+        Bukkit.getServer().getScheduler().runTaskLater(plugin, () -> {
+            if (player != null) {
+                plugin.rtpQue.add(player.getUniqueId());
+                player.leaveVehicle();
+
+                Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                    final int radius = plugin.getConfig().getInt("randomtp.radius");
+
+                    int x = random.nextInt(radius - (-radius)) + radius;
+                    int z = random.nextInt(radius - (-radius)) + radius;
+                    int y = player.getWorld().getHighestBlockAt(x, z).getY() + 1;
+
+                    player.teleport(new org.bukkit.Location(player.getWorld(), x, y, z));
+                }, 1);
+
+            }
+        }, 5);
+
+        if (player != null) {
+            Bukkit.getServer().getScheduler().runTaskLater(plugin, () -> plugin.rtpQue.remove(player.getUniqueId()), 100);
+        }
     }
 
     private void teleportPlayer(final String s, final String t) {
